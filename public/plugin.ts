@@ -22,8 +22,7 @@ import { VisualizationsSetup } from '../../../src/plugins/visualizations/public'
 import { kbnDotplotVisTypeDefinition } from './kbn-dotplot-vis';
 
 import { DataPublicPluginStart } from '../../../src/plugins/data/public';
-import { setFormatService, setOpensearchDashboardsLegacy, setNotifications, setQueryService, setSearchService } from './services';
-import { OpensearchDashboardsLegacyStart } from '../../../src/plugins/opensearch_dashboards_legacy/public';
+import { setFormatService, setNotifications, setQueryService, setSearchService } from './services';
 
 
 /** @internal */
@@ -34,13 +33,11 @@ export interface TablePluginSetupDependencies {
 /** @internal */
 export interface TablePluginStartDependencies {
   data: DataPublicPluginStart;
-  opensearchDashboardsLegacy: OpensearchDashboardsLegacyStart;
 }
 
 /** @internal */
 export class KbnDotplotPlugin implements Plugin<Promise<void>, void> {
   initializerContext: PluginInitializerContext;
-  createBaseVisualization: any;
 
   constructor(initializerContext: PluginInitializerContext) {
     this.initializerContext = initializerContext;
@@ -50,15 +47,13 @@ export class KbnDotplotPlugin implements Plugin<Promise<void>, void> {
     core: CoreSetup,
     { visualizations }: TablePluginSetupDependencies
   ) {
-    visualizations.createBaseVisualization(
-      kbnDotplotVisTypeDefinition(core, this.initializerContext)
+    visualizations.createReactVisualization(
+      kbnDotplotVisTypeDefinition()
     );
-
   }
 
-  public start(core: CoreStart, { data, opensearchDashboardsLegacy }: TablePluginStartDependencies) {
+  public start(core: CoreStart, { data }: TablePluginStartDependencies) {
     setFormatService(data.fieldFormats);
-    setOpensearchDashboardsLegacy(opensearchDashboardsLegacy);
     setNotifications(core.notifications);
     setQueryService(data.query);
     setSearchService(data.search);

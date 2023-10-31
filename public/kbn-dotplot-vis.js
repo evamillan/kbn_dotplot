@@ -21,18 +21,16 @@ import { i18n } from '@osd/i18n';
 import { AggGroupNames } from '../../../src/plugins/data/public';
 import { Schemas } from '../../../src/plugins/vis_default_editor/public';
 
-import tableVisTemplate from './kbn-dotplot-vis.html';
-import { getKbnDotplotVisualizationController } from './vis_controller';
 import { kbnDotplotRequestHandler } from './data_load/kbn-dotplot-request-handler';
 import { kbnDotplotResponseHandler } from './data_load/kbn-dotplot-response-handler';
 import { KbnDotplotOptions } from './components/kbn_dotplot_vis_options_lazy';
+import { DotplotVisComponent } from './components/kbn_dotplot_vis_component';
 import { VIS_EVENT_TO_TRIGGER } from '../../../src/plugins/visualizations/public';
 import './index.scss'
 import image from './images/icon-dots.svg';
 
-
 // define the visType object, which kibana will use to display and configure new Vis object of this type.
-export function kbnDotplotVisTypeDefinition(core, context) {
+export function kbnDotplotVisTypeDefinition() {
   return {
     type: 'dotplot',
     name: 'kbn_dotplot',
@@ -43,13 +41,11 @@ export function kbnDotplotVisTypeDefinition(core, context) {
     description: i18n.translate('visTypeKbnDotplot.visDescription', {
       defaultMessage: 'Visualize dot with metrics in both axis'
     }),
-    visualization: getKbnDotplotVisualizationController(core, context),
     getSupportedTriggers: () => {
       return [VIS_EVENT_TO_TRIGGER.filter];
     },
     visConfig: {
-      defaults: {},
-      template: tableVisTemplate
+      component: DotplotVisComponent
     },
     editorConfig: {
       optionsTemplate: KbnDotplotOptions,
